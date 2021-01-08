@@ -39,7 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CH.Project.HttpApi.Client.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CH.Project.DbMigrator", "src\CH.Project.DbMigrator\CH.Project.DbMigrator.csproj", "{AA94D832-1CCC-4715-95A9-A483F23A1A5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CH.Project.WebApi", "CH.Project.WebApi\CH.Project.WebApi.csproj", "{74A99AA7-D5C3-43FD-B54B-149336ED8C2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CH.Project.WebApi", "CH.Project.WebApi\CH.Project.WebApi.csproj", "{74A99AA7-D5C3-43FD-B54B-149336ED8C2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CH.Project.Commont", "CH.Project.Commont\CH.Project.Commont.csproj", "{5C364F21-2AAD-4289-98A7-5D0B349952C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{74A99AA7-D5C3-43FD-B54B-149336ED8C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74A99AA7-D5C3-43FD-B54B-149336ED8C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74A99AA7-D5C3-43FD-B54B-149336ED8C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C364F21-2AAD-4289-98A7-5D0B349952C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C364F21-2AAD-4289-98A7-5D0B349952C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C364F21-2AAD-4289-98A7-5D0B349952C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C364F21-2AAD-4289-98A7-5D0B349952C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{EF480016-9127-4916-8735-D2466BDBC582} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{AA94D832-1CCC-4715-95A9-A483F23A1A5D} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{74A99AA7-D5C3-43FD-B54B-149336ED8C2C} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{5C364F21-2AAD-4289-98A7-5D0B349952C9} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
