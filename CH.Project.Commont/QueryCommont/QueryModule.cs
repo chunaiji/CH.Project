@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace CH.Project.Commont.QueryCommont
@@ -20,7 +22,8 @@ namespace CH.Project.Commont.QueryCommont
 
         public virtual Expression<Func<TEntity, bool>> GenerateExpression()
         {
-            return this.expression.And(this.GenerateExpression());
+            //return Expression<Func<TEntity, bool>>.Lambda(expression.Body,).Add(expression, this.GenerateQueryExpressionCore());
+            return null;
         }
 
        

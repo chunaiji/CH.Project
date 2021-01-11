@@ -4,4 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NewLife.Redis" Version="3.8.2021.101" />
+    <PackageReference Include="NewLife.Stardust" Version="1.2.2021.103" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MQCommont\" />
+  </ItemGroup>
+
 </Project>
