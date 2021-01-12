@@ -1,4 +1,6 @@
-﻿using Volo.Abp.Account;
+﻿
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -25,6 +27,10 @@ namespace CH.Project
             {
                 options.AddMaps<ProjectApplicationModule>();
             });
+
+            //Server层注入
+            //context.Services.AddScoped<Commont.RedisCommont.IRedisHelper, Commont.RedisCommont.RedisHelper>();
+            Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient();//第一次初始化
         }
     }
 }

@@ -5,24 +5,26 @@ using System.Text;
 
 namespace CH.Project.Commont.RedisCommont
 {
-    public class RedisHelper
+    public class RedisCommontHelper : IRedisHelper
     {
         protected virtual string ServerName { get; set; }
         protected virtual string Password { get; set; }
         protected virtual int DBIndex { get; set; } = 0;
         protected static Redis RedisClient { get; set; }
 
-        public static RedisHelper Instantiation = new RedisHelper();
-        private RedisHelper()
+        protected static RedisCommontHelper Instantiation = new RedisCommontHelper();
+        private RedisCommontHelper()
         {
-
+            //后面用配置
+            ServerName = "139.199.190.97:16379";
+            Password = "CHU383039284";
         }
 
-        public RedisHelper CreateInstantiation()
+        public static RedisCommontHelper CreateInstantiation()
         {
             if (Instantiation == null)
             {
-                Instantiation = new RedisHelper();
+                Instantiation = new RedisCommontHelper();
             }
             return Instantiation;
         }
@@ -41,16 +43,30 @@ namespace CH.Project.Commont.RedisCommont
             RedisClient.Set(key, value, timeOut);
         }
 
-        public void Get<T>(string key)
+        public T Get<T>(string key)
         {
-            RedisClient.Get<T>(key);
+            if (ContainsKey(key))
+            {
+                return RedisClient.Get<T>(key);
+            }
+            return default(T);
         }
-
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Remove<T>(string key)
         {
             return RedisClient.Remove(key) > 0;
         }
-
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Removes<T>(string[] key)
         {
             return RedisClient.Remove(key) > 0;

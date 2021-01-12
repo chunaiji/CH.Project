@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NewLife.Cube;
+using NewLife.Cube.WebMiddleware;
 using NewLife.Log;
 using NewLife.Remoting;
 using Stardust.Monitors;
@@ -31,26 +32,30 @@ namespace CH.Project.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CH.Project.WebApi", Version = "v1" });
             });
+
             services.AddScoped<GlobalExceptionFilter>();
             services.AddHttpContextAccessor();
             services.AddApplication<ProjectWebApiModule>();
-            services.AddMvc(op=>op.EnableEndpointRouting=false).AddRazorPagesOptions(o =>
-            {
-                o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-            });
+            services.AddMvc(op => op.EnableEndpointRouting = false).AddRazorPagesOptions(o =>
+                {
+                    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+                });
 
-            #region 星链分布式监控引用
+            #region 星尘分布式监控引用
             var set = Stardust.Setting.Current;
             set.Server = "http://111.230.252.105:6600";
             if (!set.Server.IsNullOrEmpty())
             {
                 // APM跟踪器
                 var tracer = new StarTracer(set.Server) { Log = XTrace.Log };
-                tracer.AppName = "CH.Project";
+                tracer.AppName = "CH.Project_Name显示";
+                tracer.AppId = "CH.Project_Appid";
+                tracer.AppSecret = "XXXXXXXXXXXXXXXXXXXXX";
                 DefaultTracer.Instance = tracer;
                 ApiHelper.Tracer = tracer;
+
                 DAL.GlobalTracer = tracer;
-                NewLife.Cube.WebMiddleware.TracerMiddleware.Tracer = tracer;
+                TracerMiddleware.Tracer = tracer;
                 services.AddSingleton<ITracer>(tracer);
             }
             services.AddControllersWithViews();
@@ -62,19 +67,17 @@ namespace CH.Project.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            var set = Setting.Current;
+            if (env.IsDevelopment() || set.Debug)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CH.Project.WebApi v1"));
             }
-
-            app.UseMvc(builder =>
+            else
             {
-                builder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
-            });
-
-          
+                app.UseHsts();
+            }
 
             app.InitializeApplication();//非常重要，缺少这个将会导致初始化失败
             app.UseHttpsRedirection();
@@ -82,10 +85,14 @@ namespace CH.Project.WebApi
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseMiddleware<TracerMiddleware>();
             app.UseCube(env);//放比较靠后一点
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");//缺少这个将导致星尘无法发现api接口
             });
         }
     }

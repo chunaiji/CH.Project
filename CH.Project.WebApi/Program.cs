@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NewLife.Log;
 using Serilog;
 using Serilog.Events;
 using System;
@@ -16,6 +17,7 @@ namespace CH.Project.WebApi
     {
         public static void Main(string[] args)
         {
+            XTrace.UseConsole();
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
                 .MinimumLevel.Debug()
