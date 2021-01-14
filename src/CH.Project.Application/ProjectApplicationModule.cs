@@ -30,7 +30,7 @@ namespace CH.Project
 
             //Server层注入
             //context.Services.AddScoped<Commont.RedisCommont.IRedisHelper, Commont.RedisCommont.RedisHelper>();
-            Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient();//第一次初始化
+            //Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient();//第一次初始化
         }
     }
 }
