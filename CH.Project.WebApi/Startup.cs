@@ -42,7 +42,7 @@ namespace CH.Project.WebApi
                 });
 
             Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient();//第一次初始化
-
+            Commont.LogCommont.SerilogHelper.CreateInstantiation();
             #region 星尘分布式监控引用
             var set = Stardust.Setting.Current;
             set.Server = "http://111.230.252.105:6600";

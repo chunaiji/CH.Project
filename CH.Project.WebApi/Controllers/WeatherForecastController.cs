@@ -26,6 +26,10 @@ namespace CH.Project.WebApi.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            Commont.LogCommont.SerilogHelper.CreateInstantiation().Info($"时间:{DateTime.Now.ToString()}");
+            Commont.LogCommont.SerilogHelper.CreateInstantiation().Debug($"时间:{DateTime.Now.ToString()}");
+            Commont.LogCommont.SerilogHelper.CreateInstantiation().Error($"时间:{DateTime.Now.ToString()}");
+            Commont.LogCommont.SerilogHelper.CreateInstantiation().Warning($"时间:{DateTime.Now.ToString()}");
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
