@@ -11,15 +11,19 @@ namespace CH.Project.Commont.LogCommont
 
         public LogBuilder()
         {
-            var logType = "Serilog";
+            var logType = "1";
             logType = ConfigActionCommont.CreateInstance().GetValue("LogSetting:LogType");
-            if (logType.ToLower() == "Serilog".ToLower())
+            if (logType.ToLower() == "1")
             {
                 logHelper = SerilogActionExtention.CreateInstance();
             }
-            if (logType.ToLower() == "nlog".ToLower())
+            else if (logType.ToLower() == "2")
             {
                 logHelper = NlogActionExtention.CreateInstance();
+            }
+            else if (logType.ToLower() == "3")
+            {
+                logHelper = ExceptionlessActionExtention.CreateInstance();
             }
         }
 
