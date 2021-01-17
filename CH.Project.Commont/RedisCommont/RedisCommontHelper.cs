@@ -1,11 +1,12 @@
-﻿using NewLife.Caching;
+﻿using CH.Project.Commont.ConfigCommont;
+using NewLife.Caching;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CH.Project.Commont.RedisCommont
 {
-    public class RedisCommontHelper : IRedisHelper
+    public class RedisCommontHelper : SingleCommont<RedisCommontHelper>, IRedisHelper
     {
         protected virtual string ServerName { get; set; }
         protected virtual string Password { get; set; }
@@ -13,20 +14,14 @@ namespace CH.Project.Commont.RedisCommont
         protected static Redis RedisClient { get; set; }
 
         protected static RedisCommontHelper Instantiation = new RedisCommontHelper();
-        private RedisCommontHelper()
+        public RedisCommontHelper()
         {
             //后面用配置
-            ServerName = "139.199.190.97:16379";
-            Password = "CHU383039284";
-        }
-
-        public static RedisCommontHelper CreateInstantiation()
-        {
-            if (Instantiation == null)
-            {
-                Instantiation = new RedisCommontHelper();
-            }
-            return Instantiation;
+            //"CHU383039284@139.199.190.97:16379"
+            var connection = ConfigActionCommont.CreateInstance().GetValue("RedisSetting:ReadWriteConnection");
+            var split = connection.Split("@");
+            Password = split[0].ToString();
+            ServerName = split[1].ToString();
         }
 
         public Redis GetRedisClient()

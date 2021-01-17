@@ -7,22 +7,11 @@ using System.Text;
 
 namespace CH.Project.Commont.LogCommont
 {
-    public class SerilogHelper : ILogHelper
+    public class SerilogHelper : SingleCommont<SerilogHelper>, ILogHelper
     {
         private static Logger LoggerInstantiation { get; set; }
 
-        private static SerilogHelper Instantiation { get; set; } = new SerilogHelper();
-
-        private string LogFilePath(string LogEvent)
-        {
-            return $@"{AppContext.BaseDirectory}Logs\{DateTime.Now.ToString("yyyy-MM-dd")}\{LogEvent}\log.log";
-        }
-
-        private string SerilogOutputTemplate = "{NewLine}{NewLine}【时间】：{Timestamp:yyyy-MM-dd HH:mm:ss.fff}【线程】{ThreadId}{NewLine}【日志等级】：{Level}{NewLine}Message：{Message}{NewLine}{Exception}"
-            + new string('-', 50);
-
-
-        private SerilogHelper()
+        public SerilogHelper()
         {
             if (LoggerInstantiation == null)
             {
@@ -40,14 +29,13 @@ namespace CH.Project.Commont.LogCommont
             }
         }
 
-        public static SerilogHelper CreateInstantiation()
+        private string LogFilePath(string LogEvent)
         {
-            if (Instantiation == null)
-            {
-                Instantiation = new SerilogHelper();
-            }
-            return Instantiation;
+            return $@"{AppContext.BaseDirectory}Logs\{DateTime.Now.ToString("yyyy-MM-dd")}\{LogEvent}\log.log";
         }
+
+        private string SerilogOutputTemplate = "{NewLine}{NewLine}【时间】：{Timestamp:yyyy-MM-dd HH:mm:ss.fff}【线程】{ThreadId}{NewLine}【日志等级】：{Level}{NewLine}Message：{Message}{NewLine}{Exception}"
+            + new string('-', 50);
 
         public void Info(string data)
         {
