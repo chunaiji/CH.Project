@@ -41,8 +41,8 @@ namespace CH.Project.WebApi
                     o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
                 });
 
-            Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient();//第一次初始化
-            Commont.LogCommont.SerilogHelper.CreateInstantiation();
+            Commont.RedisCommont.RedisCommontHelper.CreateInstance().GetRedisClient();//第一次初始化
+            Commont.LogCommont.SerilogHelper.CreateInstance();
             #region 星尘分布式监控引用
             var set = Stardust.Setting.Current;
             set.Server = "http://111.230.252.105:6600";
@@ -58,7 +58,7 @@ namespace CH.Project.WebApi
 
                 DAL.GlobalTracer = tracer;
                 TracerMiddleware.Tracer = tracer;
-                Commont.RedisCommont.RedisCommontHelper.CreateInstantiation().GetRedisClient().Tracer= tracer;
+                Commont.RedisCommont.RedisCommontHelper.CreateInstance().GetRedisClient().Tracer= tracer;
                 services.AddSingleton<ITracer>(tracer);
             }
             services.AddControllersWithViews();
