@@ -15,7 +15,11 @@ namespace CH.Project.Commont.LogCommont
             logType = ConfigActionCommont.CreateInstance().GetValue("LogSetting:LogType");
             if (logType.ToLower() == "Serilog".ToLower())
             {
-                logHelper = SerilogHelper.CreateInstance();
+                logHelper = SerilogActionExtention.CreateInstance();
+            }
+            if (logType.ToLower() == "nlog".ToLower())
+            {
+                logHelper = NlogActionExtention.CreateInstance();
             }
         }
 
@@ -34,6 +38,16 @@ namespace CH.Project.Commont.LogCommont
         public void Warning(string data)
         {
             logHelper.Warning(data);
+        }
+
+        public void Fatal(string data)
+        {
+            logHelper.Fatal(data);
+        }
+
+        public void Trace(string data)
+        {
+            logHelper.Trace(data);
         }
     }
 }

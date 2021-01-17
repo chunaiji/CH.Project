@@ -7,11 +7,11 @@ using System.Text;
 
 namespace CH.Project.Commont.LogCommont
 {
-    public class SerilogHelper : SingleCommont<SerilogHelper>, ILogHelper
+    public class SerilogActionExtention : SingleCommont<SerilogActionExtention>, ILogHelper
     {
         private static Logger LoggerInstantiation { get; set; }
 
-        public SerilogHelper()
+        public SerilogActionExtention()
         {
             if (LoggerInstantiation == null)
             {
@@ -55,6 +55,16 @@ namespace CH.Project.Commont.LogCommont
         public void Warning(string data)
         {
             LoggerInstantiation.Warning(data);
+        }
+
+        public void Fatal(string strMsg)
+        {
+            LoggerInstantiation.Fatal(strMsg);
+        }
+
+        public void Trace(string strMsg)
+        {
+            throw new NotImplementedException();
         }
     }
 }

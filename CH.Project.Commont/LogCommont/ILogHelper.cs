@@ -10,5 +10,7 @@ namespace CH.Project.Commont.LogCommont
         void Error(string data);
         void Debug(string data);
         void Warning(string data);
+        void Fatal(string data);
+        void Trace(string data);
     }
 }
