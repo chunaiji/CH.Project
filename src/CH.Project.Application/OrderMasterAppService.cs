@@ -25,9 +25,9 @@ namespace CH.Project
         public async Task<List<OrderMasterDto>> GetOrderMasterList(string name)
         {
             var key = "CHProject:Demo:" + DateTime.Now.ToString("yyyy-MM-dd") + ":" + name;
-            if (RedisCommontHelper.CreateInstantiation().ContainsKey(key))
+            if (RedisCommontHelper.CreateInstance().ContainsKey(key))
             {
-                var entity = RedisCommontHelper.CreateInstantiation().Get<OrderMaster>(key);
+                var entity = RedisCommontHelper.CreateInstance().Get<OrderMaster>(key);
                 return ObjectMapper.Map<List<OrderMaster>, List<OrderMasterDto>>(new List<OrderMaster>() { entity });
             }
             var list = await _orderMasterRepository.GetOrderMasterList(name);
@@ -51,9 +51,9 @@ namespace CH.Project
                 await _orderDetailRepository.InsertAsync(orderDetail);
                 entity.OrderDetails = new List<OrderDetail>();
                 entity.OrderDetails.Add(orderDetail);
-                if (!RedisCommontHelper.CreateInstantiation().ContainsKey(key))
+                if (!RedisCommontHelper.CreateInstance().ContainsKey(key))
                 {
-                    RedisCommontHelper.CreateInstantiation().Set<OrderMaster>(key, entity);
+                    RedisCommontHelper.CreateInstance().Set<OrderMaster>(key, entity);
                 }
             }
             return flag;

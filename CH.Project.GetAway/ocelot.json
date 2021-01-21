@@ -1,0 +1,84 @@
+{
+  //身份认证 限流* 熔断* 日志  负载均衡* 弹性 瞬态故障处理 请求聚合 缓存  OpenTracing【链路追踪】  
+  // Consul 服务发现 服务注册
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/user/{url}",
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "47.107.180.18",
+          "Port": 8080
+        }
+      ],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/server/{url}",
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "UseServiceDiscovery": true,
+      "ServiceName": "HelloServer", //ServiceName 服务名称要跟Consul的服务名称一致【ServiceName DownstreamHostAndPorts】不可以同时为空，也不可以同时存在
+      "Key": "server", //声明聚合路由
+      //"DownstreamHostAndPorts": [ //使用服务发现后需要注释掉
+      //  {
+      //    "Host": "localhost",
+      //    "Port": 8082
+      //  },
+      //  {
+      //    "Host": "localhost",
+      //    "Port": 8083
+      //  }
+      //],
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin" //负载均衡，轮询机制 LeastConnection/RoundRobin/NoLoadBalancer/CookieStickySessions
+      },
+      "ReRouteIsCaseSensitive": false, //重写路由是否区分大小写
+      //缓存
+      //"FileCacheOptions": {
+      //  "TtlSeconds": 30, //缓存时间（秒）
+      //  "Region": "CacheArea" //缓存区（名称自定义），表示改配置缓存放到哪个区域，可以在配置管理中进行维护
+      //},
+      //限流
+      "RateLimitOptions": {
+        "ClientWhitelist": [], //数组中的客户机不会受到路由限制的影响使用方式：在客户端请求头中添加key：ClientId，value为网关配置白名单。
+        "EnableRateLimiting": true, //是否启用路由限制。
+        "Period": "1s", //指定周期，如1s、5m、1h、1d等。
+        "PeriodTimespan": 1, //指定我们可以在一定秒数后重试【限流后多久可以重试】。
+        "Limit": 1 //指定客户端在定义的时间段内可以发出的最大请求数
+      }
+
+    }
+  ],
+  "GlobalConfiguration": {
+    //"BaseUrl": "http://localhost:9070"
+    //全局限流
+    "RateLimitOptions": {
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Customize Tips!", //限流返回的信息。
+      "HttpStatusCode": 999 //限流返回状态码
+    },
+    //服务发现
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 8500,
+      "Token": "footoken",
+      "Provider": "consul", //Consul PollConsul
+      "PollingInterval": 100
+    },
+    //服务质量  熔断？
+    "QoSOptions": {
+      "ExceptionsAllowedBeforeBreaking": 2, //在熔断之前允许的异常次数
+      "DurationOfBreak": 5000, //熔断时长 ，单位毫秒
+      "TimeoutValue": 2000 //请求超时设置, 单位毫秒
+    }
+  }
+}

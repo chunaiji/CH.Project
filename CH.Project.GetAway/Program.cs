@@ -18,6 +18,7 @@ namespace CH.Project.GetAway
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(conf => conf.AddJsonFile("ocelot.json", false, true))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
