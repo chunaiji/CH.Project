@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace CH.Project.IRepository
 {
-    public interface IOrderMasterRepository : IRepository<OrderMaster>,ITransientDependency
+    public interface IOrderMasterRepository : IBaseRepository<OrderMaster>
     {
         Task<List<OrderMaster>> GetOrderMasterList(string amount);
         Task<bool> InsertOrderMaster(OrderMaster orderMaster);

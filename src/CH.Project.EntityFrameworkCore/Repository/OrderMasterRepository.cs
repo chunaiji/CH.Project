@@ -12,24 +12,28 @@ using Volo.Abp.EntityFrameworkCore;
 
 namespace CH.Project.Repository
 {
-    public class OrderMasterRepository : EfCoreRepository<ProjectDbContext, OrderMaster>, IOrderMasterRepository
+    public class OrderMasterRepository : BaseRepository<OrderMaster>, IOrderMasterRepository
     {
-        public OrderMasterRepository(IDbContextProvider<ProjectDbContext> dbContextProvider)
+        private readonly IOrderDetailRepository orderDetails;
+        public OrderMasterRepository(IDbContextProvider<ProjectDbContext> dbContextProvider, IServiceProvider serviceProvider)
         : base(dbContextProvider)
         {
-
+            orderDetails = (IOrderDetailRepository)serviceProvider.GetService(typeof(IOrderDetailRepository));
         }
 
         public async Task<List<OrderMaster>> GetOrderMasterList(string name)
         {
-            var list = DbSet.AsQueryable().Where(u => u.Name.Contains(name)).ToList();
+            var list = base.BaseGetAll().Where(u => u.Name.Contains(name)).ToList();
+            foreach (var item in list)
+            {
+                item.OrderDetails = orderDetails.BaseGetAll().Where(u=>u.OrderId==item.Id).ToList();
+            }
             return await Task.FromResult(list);
         }
 
         public async Task<bool> InsertOrderMaster(OrderMaster orderMaster)
         {
-            DbSet.Add(orderMaster);
-            await DbContext.SaveChangesAsync();
+            await base.BaseAdd(orderMaster);
             return await Task.FromResult(true);
         }
     }

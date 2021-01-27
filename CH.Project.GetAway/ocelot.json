@@ -1,6 +1,6 @@
 {
   //身份认证 限流* 熔断* 日志  负载均衡* 弹性 瞬态故障处理 请求聚合 缓存  OpenTracing【链路追踪】  
-  // Consul 服务发现 服务注册
+  // Consul 服务发现* 服务注册*
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/user/{url}",
@@ -68,7 +68,7 @@
     },
     //服务发现
     "ServiceDiscoveryProvider": {
-      "Host": "localhost",
+      "Host": "localhost", //上线后需要取线上地址
       "Port": 8500,
       "Token": "footoken",
       "Provider": "consul", //Consul PollConsul

@@ -11,7 +11,7 @@ using Volo.Abp.EntityFrameworkCore;
 
 namespace CH.Project.Repository
 {
-   public class OrderDetailRepository : EfCoreRepository<ProjectDbContext, OrderDetail>, IOrderDetailRepository
+    public class OrderDetailRepository : BaseRepository<OrderDetail>, IOrderDetailRepository
     {
         public OrderDetailRepository(IDbContextProvider<ProjectDbContext> dbContextProvider)
         : base(dbContextProvider)

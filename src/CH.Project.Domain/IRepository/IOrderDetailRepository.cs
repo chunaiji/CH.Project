@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace CH.Project.IRepository
 {
-    public interface IOrderDetailRepository : IRepository<OrderDetail>, ITransientDependency
+    public interface IOrderDetailRepository : IBaseRepository<OrderDetail>
     {
     }
 }
