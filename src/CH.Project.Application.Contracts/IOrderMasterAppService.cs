@@ -10,7 +10,7 @@ namespace CH.Project
 {
     public interface IOrderMasterAppService : IApplicationService, ITransientDependency
     {
-        Task<List<OrderMasterDto>> GetOrderMasterList(OrderMasterRequest request);
+        Task<List<OrderMasterDto>> GetOrderMasterList(string request);
 
         Task<bool> InsertOrderMaster(string name);
     }

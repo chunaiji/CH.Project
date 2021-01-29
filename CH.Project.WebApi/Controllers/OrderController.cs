@@ -30,7 +30,7 @@ namespace CH.Project.WebApi.Controllers
         [HttpGet]
         public async Task<List<OrderMasterDto>> GetOrderMasterList(OrderMasterRequest request)
         {
-            return await _orderMasterAppService.GetOrderMasterList(request);
+            return await _orderMasterAppService.GetOrderMasterList("");
         }
     }
 

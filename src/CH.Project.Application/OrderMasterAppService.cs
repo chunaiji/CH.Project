@@ -21,8 +21,9 @@ namespace CH.Project
             _orderMasterRepository = orderMasterRepository;
         }
 
-        public async Task<List<OrderMasterDto>> GetOrderMasterList(OrderMasterRequest request)
+        public async Task<List<OrderMasterDto>> GetOrderMasterList(string aa)
         {
+            OrderMasterRequest request = new OrderMasterRequest();
             var key = "CHProject:Demo:" + DateTime.Now.ToString("yyyy-MM-dd") + ":" + request.Name;
             if (RedisCommontHelper.CreateInstance().ContainsKey(key))
             {
