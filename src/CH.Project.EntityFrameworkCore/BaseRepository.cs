@@ -16,7 +16,7 @@ namespace CH.Project
 {
     public class BaseRepository<T> : EfCoreRepository<ProjectDbContext, T>, IBaseRepository<T> where T : class, IEntity, new()
     {
-        private IDbContextProvider<ProjectDbContext> _dbContextProvider ;
+        private IDbContextProvider<ProjectDbContext> _dbContextProvider;
         protected DbSet<T> _entity;
         protected virtual DbSet<T> Entity => _entity ?? (_entity = _dbContextProvider.GetDbContext().Set<T>());
 
@@ -55,10 +55,19 @@ namespace CH.Project
             return Entity.AsQueryable().AsNoTracking();
         }
 
-        public async Task<PageResult<T>> SearchFor<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> predicate, bool isAsc, Expression<Func<T, TKey>> keySelector)
+        //public async Task<PageResult<T>> SearchFor<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> predicate, bool isAsc, Expression<Func<T, TKey>> keySelector = null)
+        //{
+        //    PageResult<T> page = new PageResult<T>();
+
+
+        //    Entity.AsQueryable().AsNoTracking().Where(predicate).OrderBy(keySelector);
+
+        //    return await Task.FromResult(page);
+        //}
+
+        public IQueryable<T> SearchFor(Expression<Func<T, bool>> predicate)
         {
-            PageResult<T> page = new PageResult<T>();
-            return await Task.FromResult(page);
+            return Entity.AsQueryable().AsNoTracking().Where(predicate);
         }
 
         public async Task<T> GetModelById(object id)

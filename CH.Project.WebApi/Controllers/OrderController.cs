@@ -24,13 +24,13 @@ namespace CH.Project.WebApi.Controllers
         [HttpPost]
         public async Task<bool> InsertOrder([FromBody]RequestData  requestData)
         {
-            return await _orderMasterAppService.InsertOrderMaster(requestData.name);
+            return await _orderMasterAppService.InsertOrderMaster(requestData.Name);
         }
 
         [HttpGet]
-        public async Task<List<OrderMasterDto>> GetOrderMasterList(string name)
+        public async Task<List<OrderMasterDto>> GetOrderMasterList(OrderMasterRequest request)
         {
-            return await _orderMasterAppService.GetOrderMasterList(name);
+            return await _orderMasterAppService.GetOrderMasterList(request);
         }
     }
 

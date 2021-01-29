@@ -14,8 +14,9 @@ namespace CH.Project.Demo
         /// <summary>
         /// 金额
         /// </summary>
-        public virtual string Amount { get; set; }
+        public virtual decimal Amount { get; set; }
         public virtual string Name { get; set; }
+        public virtual int Age { get; set; }
         /// <summary>
         /// 用户ID
         /// </summary>

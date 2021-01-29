@@ -2,13 +2,11 @@
 using CH.Project.QueryCommont;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CH.Project.Request
 {
-    public class RequestData : Query<OrderMaster>
+    public class OrderMasterRequest : Query<OrderMaster>
     {
         [QueryMode(Compare = QueryCompare.Equal, PropertyPath = nameof(OrderMaster.Name))]
         public virtual string Name { get; set; }

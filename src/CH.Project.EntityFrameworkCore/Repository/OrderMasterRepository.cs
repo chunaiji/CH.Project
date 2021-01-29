@@ -1,6 +1,7 @@
 ﻿using CH.Project.Demo;
 using CH.Project.EntityFrameworkCore;
 using CH.Project.IRepository;
+using CH.Project.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,9 @@ namespace CH.Project.Repository
             orderDetails = (IOrderDetailRepository)serviceProvider.GetService(typeof(IOrderDetailRepository));
         }
 
-        public async Task<List<OrderMaster>> GetOrderMasterList(string name)
+        public async Task<List<OrderMaster>> GetOrderMasterList(OrderMasterRequest request)
         {
-            var list = base.BaseGetAll().Where(u => u.Name.Contains(name)).ToList();
+            var list = base.SearchFor(request.GenerateExpression()).ToList();
             foreach (var item in list)
             {
                 item.OrderDetails = orderDetails.BaseGetAll().Where(u=>u.OrderId==item.Id).ToList();
@@ -33,8 +34,15 @@ namespace CH.Project.Repository
 
         public async Task<bool> InsertOrderMaster(OrderMaster orderMaster)
         {
-            await base.BaseAdd(orderMaster);
-            return await Task.FromResult(true);
+            var result = await base.BaseAdd(orderMaster);
+            if (result > 0)
+            {
+                foreach (var item in orderMaster.OrderDetails)
+                {
+                    await orderDetails.BaseAdd(item);
+                }
+            }
+            return await Task.FromResult(result > 0);
         }
     }
 }

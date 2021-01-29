@@ -50,8 +50,10 @@ namespace CH.Project.IRepository
         /// <param name="isAsc">是否升序排列</param>
         /// <param name="keySelector">排序表达式</param>
         /// <returns></returns>
-        Task<PageResult<TEntity>> SearchFor<TKey>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> predicate,
-            bool isAsc, Expression<Func<TEntity, TKey>> keySelector);
+        //Task<PageResult<TEntity>> SearchFor<TKey>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TKey>> keySelector = null);
+
+        //IQueryable<TEntity> SearchFor<TKey>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TKey>> keySelector = null);
+        IQueryable<TEntity> SearchFor(Expression<Func<TEntity, bool>> predicate);
         /// <summary>
         /// 获取实体（主键）
         /// </summary>

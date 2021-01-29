@@ -1,4 +1,5 @@
 ﻿using CH.Project.Demo;
+using CH.Project.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace CH.Project.IRepository
 {
     public interface IOrderMasterRepository : IBaseRepository<OrderMaster>
     {
-        Task<List<OrderMaster>> GetOrderMasterList(string amount);
+        Task<List<OrderMaster>> GetOrderMasterList(OrderMasterRequest request);
         Task<bool> InsertOrderMaster(OrderMaster orderMaster);
     }
 }

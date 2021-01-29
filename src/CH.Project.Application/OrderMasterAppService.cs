@@ -2,6 +2,7 @@
 using CH.Project.Demo;
 using CH.Project.Dto;
 using CH.Project.IRepository;
+using CH.Project.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,26 +16,20 @@ namespace CH.Project
     public class OrderMasterAppService : ApplicationService, IOrderMasterAppService
     {
         private readonly IOrderMasterRepository _orderMasterRepository;
-        private readonly IOrderDetailRepository _orderDetailRepository;
         public OrderMasterAppService(IOrderMasterRepository orderMasterRepository, IOrderDetailRepository orderDetailRepository)
         {
             _orderMasterRepository = orderMasterRepository;
-            _orderDetailRepository = orderDetailRepository;
         }
 
-        public async Task<List<OrderMasterDto>> GetOrderMasterList(string name)
+        public async Task<List<OrderMasterDto>> GetOrderMasterList(OrderMasterRequest request)
         {
-            var key = "CHProject:Demo:" + DateTime.Now.ToString("yyyy-MM-dd") + ":" + name;
+            var key = "CHProject:Demo:" + DateTime.Now.ToString("yyyy-MM-dd") + ":" + request.Name;
             if (RedisCommontHelper.CreateInstance().ContainsKey(key))
             {
                 var entity = RedisCommontHelper.CreateInstance().Get<OrderMaster>(key);
                 return ObjectMapper.Map<List<OrderMaster>, List<OrderMasterDto>>(new List<OrderMaster>() { entity });
             }
-            var list = await _orderMasterRepository.GetOrderMasterList(name);
-            foreach (var item in list)
-            {
-                item.OrderDetails = _orderDetailRepository.AsQueryable().Where(u => u.OrderId == item.Id).ToList();
-            }
+            var list = await _orderMasterRepository.GetOrderMasterList(request);
             return ObjectMapper.Map<List<OrderMaster>, List<OrderMasterDto>>(list);
         }
 
@@ -43,14 +38,13 @@ namespace CH.Project
             var key = "CHProject:Demo:" + DateTime.Now.ToString("yyyy-MM-dd") + ":" + name;
             OrderMaster entity = new OrderMaster() { Name = name };
             entity.SetId();
+            entity.OrderDetails = new List<OrderDetail>();
+            var orderDetail = new OrderDetail() { OrderId = entity.Id, GoodsName = "测试", GoodsNo = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
+            orderDetail.SetId();
+            entity.OrderDetails.Add(orderDetail);
             var flag = await _orderMasterRepository.InsertOrderMaster(entity);
             if (flag)
             {
-                var orderDetail = new OrderDetail() { OrderId = entity.Id, GoodsName = "测试", GoodsNo = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
-                orderDetail.SetId();
-                await _orderDetailRepository.InsertAsync(orderDetail);
-                entity.OrderDetails = new List<OrderDetail>();
-                entity.OrderDetails.Add(orderDetail);
                 if (!RedisCommontHelper.CreateInstance().ContainsKey(key))
                 {
                     RedisCommontHelper.CreateInstance().Set<OrderMaster>(key, entity);
