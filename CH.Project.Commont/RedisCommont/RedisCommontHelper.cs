@@ -114,5 +114,10 @@ namespace CH.Project.Commont.RedisCommont
         {
             return RedisClient.ContainsKey(key);
         }
+
+        public void aa() {
+
+            
+        }
     }
 }

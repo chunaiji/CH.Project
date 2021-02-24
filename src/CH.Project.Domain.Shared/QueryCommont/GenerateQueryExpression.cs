@@ -52,12 +52,12 @@ namespace CH.Project.QueryCommont
                     var experssion = CreateQueryExpression(param, propertyValue, propertyPath, ((QueryModeAttribute)attribute).Compare);
                     if (experssion != null)
                     {
-                        sub = sub == null ? experssion : Expression.Or(sub, experssion);
+                        sub = sub == null ? experssion : Expression.OrElse(sub, experssion);
                     }
                 }
                 if (sub != null)
                 {
-                    body = body == null ? sub : Expression.And(body, sub);
+                    body = body == null ? sub : Expression.AndAlso(body, sub);
                 }
             }
             if (body != null)
