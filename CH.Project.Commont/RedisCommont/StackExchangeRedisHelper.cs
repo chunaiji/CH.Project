@@ -40,7 +40,11 @@ namespace CH.Project.Commont.RedisCommont
             }
         }
 
-        public void InitConnect(string redisConnection = "password=CHU383039284,139.199.190.97:16379,allowAdmin=true")
+        /// <summary>
+        /// "password=CHU383039284,139.199.190.97:16379,allowAdmin=true"
+        /// </summary>
+        /// <param name="redisConnection"></param>
+        public void InitConnect(string redisConnection = "password=123456,47.107.180.18:6379,allowAdmin=true")
         {
             try
             {
@@ -91,14 +95,16 @@ namespace CH.Project.Commont.RedisCommont
             {
                 return default;
             }
-
-            var value = db.StringGet(key);
-            if (value.IsNullOrEmpty)
+            if (db.KeyExists(new RedisKey(key) { }))
             {
-                return default;
+                var value = db.StringGet(key);
+                if (value.IsNullOrEmpty)
+                {
+                    return default;
+                }
+                return JsonConvert.DeserializeObject<T>(value);
             }
-
-            return JsonConvert.DeserializeObject<T>(value);
+            return default;
         }
 
         /// <summary>
@@ -132,7 +138,6 @@ namespace CH.Project.Commont.RedisCommont
                     Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {message}");
                 });
                 Console.WriteLine("已订阅 messages");
-                Console.ReadKey();
             }
         }
 

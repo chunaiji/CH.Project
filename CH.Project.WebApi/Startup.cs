@@ -1,4 +1,5 @@
 using CH.Project.Commont.LogCommont;
+using CH.Project.Commont.MQCommont.RabbitMQExtention;
 using CH.Project.WebApi.Attributes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,31 +50,31 @@ namespace CH.Project.WebApi
             Commont.RedisCommont.RedisCommontHelper.CreateInstance().GetRedisClient();//第一次初始化
             Commont.RedisCommont.StackExchangeRedisHelper.redisClient.InitConnect();
             Commont.LogCommont.SerilogActionExtention.CreateInstance();
-            #region 星尘分布式监控引用
-            var set = Stardust.Setting.Current;
-            set.Server = "http://111.230.252.105:6600";
-            if (!set.Server.IsNullOrEmpty())
-            {
-                // APM跟踪器
-                var tracer = new StarTracer(set.Server) { Log = XTrace.Log };
-                tracer.AppName = "CH.Project_Name显示";
-                tracer.AppId = "CH.Project_Appid";
-                tracer.AppSecret = "XXXXXXXXXXXXXXXXXXXXX";
-                DefaultTracer.Instance = tracer;
-                ApiHelper.Tracer = tracer;
+            //#region 星尘分布式监控引用
+            //var set = Stardust.Setting.Current;
+            //set.Server = "http://111.230.252.105:6600";
+            //if (!set.Server.IsNullOrEmpty())
+            //{
+            //    // APM跟踪器
+            //    var tracer = new StarTracer(set.Server) { Log = XTrace.Log };
+            //    tracer.AppName = "CH.Project_Name显示";
+            //    tracer.AppId = "CH.Project_Appid";
+            //    tracer.AppSecret = "XXXXXXXXXXXXXXXXXXXXX";
+            //    DefaultTracer.Instance = tracer;
+            //    ApiHelper.Tracer = tracer;
 
-                DAL.GlobalTracer = tracer;
-                TracerMiddleware.Tracer = tracer;
-                Commont.RedisCommont.RedisCommontHelper.CreateInstance().GetRedisClient().Tracer = tracer;
-                services.AddSingleton<ITracer>(tracer);
-            }
-            services.AddControllersWithViews();
-            // 引入魔方
-            services.AddCube();
-            #endregion
+            //    DAL.GlobalTracer = tracer;
+            //    TracerMiddleware.Tracer = tracer;
+            //    Commont.RedisCommont.RedisCommontHelper.CreateInstance().GetRedisClient().Tracer = tracer;
+            //    services.AddSingleton<ITracer>(tracer);
+            //}
+            //services.AddControllersWithViews();
+            //// 引入魔方
+            //services.AddCube();
+            //#endregion
             //services.AddSkyApmExtensions();
-           
 
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,8 +107,8 @@ namespace CH.Project.WebApi
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");//缺少这个将导致星尘无法发现api接口
             });
-     
-         
+            app.UseSession();
+
 
             Subscriber();
             var webSocketOptions = new WebSocketOptions()
@@ -131,6 +132,10 @@ namespace CH.Project.WebApi
                         }
 
                         var appServerList = Commont.RedisCommont.StackExchangeRedisHelper.redisClient.GetStringKey<Dictionary<string, string>>("APP-ServerList");
+                        if (appServerList == null)
+                        {
+                            appServerList = new Dictionary<string, string>();
+                        }
                         appServerList.Add(userId, ServerId);
                         Commont.RedisCommont.StackExchangeRedisHelper.redisClient.SetStringKey("APP-ServerList", JsonConvert.SerializeObject(appServerList));
                         await Commont.WebSocketCommont.WebSocketHelper.InitSocket(userId, webSocket);
@@ -163,13 +168,15 @@ namespace CH.Project.WebApi
             {
                 serverList = new List<string>();
             }
-            ServerId = Guid.NewGuid().ToString();
+            ServerId = "722eb960-93f8-422d-b9bb-cd4b9fa78b59";// Guid.NewGuid().ToString();
             if (!serverList.Contains(ServerId))
             {
                 serverList.Add(ServerId);
                 foreach (var item in serverList)
                 {
-                    Commont.RedisCommont.StackExchangeRedisHelper.redisClient.Subscriber($"Server_topic_{item}");
+                    RabbitMQProducterHelper.CreateInstance().SetExchangQueueName("ProjectDemo", $"Server_topic_{item}", "topic");
+                    RabbitMQConsumerHelper.CreateInstance().ConsumerLogicDelegate += Commont.WebSocketCommont.WebSocketHelper.ConsumerLogicDel;
+                    RabbitMQConsumerHelper.CreateInstance().SetExchangQueueName("ProjectDemo", $"Server_topic_{item}", "topic");
                 }
                 Commont.RedisCommont.StackExchangeRedisHelper.redisClient.SetStringKey("ServerList", JsonConvert.SerializeObject(serverList));//先用最简单的
             }

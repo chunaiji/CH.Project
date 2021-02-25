@@ -14,17 +14,26 @@ namespace CH.Project.Commont.MQCommont.RabbitMQExtention
 
         public RabbitMQConsumerHelper()
         {
-            if (Consumer == null)
-            {
-                var exchangName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQVirtualHost");
-                var queueName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangQueue");
-                var exchangeType = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangType");
+            Consumer = new RabbitMQConsumer();
+        }
 
-                Consumer = new RabbitMQConsumer();
-                Consumer.SetExchangQueueName(exchangName, queueName, exchangeType);
-                Consumer.RabbitMQConsumerReceived += ConsumerReceived;
-                Consumer.InitRabbitMQ();
+        public void SetExchangQueueName(string exchangName = "", string queueName = "", string exchangeType = "")
+        {
+            if (string.IsNullOrEmpty(exchangName))
+            {
+                exchangName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQVirtualHost");
             }
+            if (string.IsNullOrEmpty(queueName))
+            {
+                queueName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangQueue");
+            }
+            if (string.IsNullOrEmpty(exchangeType))
+            {
+                exchangeType = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangType");
+            }
+            Consumer.SetExchangQueueName(exchangName, queueName, exchangeType);
+            Consumer.RabbitMQConsumerReceived += ConsumerReceived;
+            Consumer.InitRabbitMQ();
         }
 
         public void ConsumerReceived(object sender, ConsumerEventArgs args)

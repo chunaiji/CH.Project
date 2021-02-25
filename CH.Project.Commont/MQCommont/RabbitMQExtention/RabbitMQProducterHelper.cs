@@ -8,22 +8,32 @@ namespace CH.Project.Commont.MQCommont.RabbitMQExtention
 {
     public class RabbitMQProducterHelper : SingleCommont<RabbitMQProducterHelper>
     {
-        public static RabbitMQProducter Producter ;
+        public static RabbitMQProducter Producter;
 
         public RabbitMQProducterHelper()
         {
-            if (Producter == null)
-            {
-                var exchangName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQVirtualHost");
-                var queueName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangQueue");
-                var exchangeType = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangType");
-
-                Producter = new RabbitMQProducter();
-                Producter.SetExchangQueueName(exchangName, queueName, exchangeType);
-            }
+            Producter = new RabbitMQProducter();
         }
+
+        public void SetExchangQueueName(string exchangName = "", string queueName = "", string exchangeType = "")
+        {
+            if (string.IsNullOrEmpty(exchangName))
+            {
+                exchangName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQVirtualHost");
+            }
+            if (string.IsNullOrEmpty(queueName))
+            {
+                queueName = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangQueue");
+            }
+            if (string.IsNullOrEmpty(exchangeType))
+            {
+                exchangeType = ConfigActionCommont.CreateInstance().GetValue("MQSetting:MQExchangType");
+            }
+            Producter.SetExchangQueueName(exchangName, queueName, exchangeType);
+        }
+
         /// <summary>
-        /// 
+        /// 发送消息
         /// </summary>
         /// <param name="value"></param>
         public void SendMessage(string value)
@@ -32,7 +42,7 @@ namespace CH.Project.Commont.MQCommont.RabbitMQExtention
         }
 
         /// <summary>
-        /// 
+        /// 发送消息
         /// </summary>
         /// <param name="consumerCmd"></param>
         public void SendMessage(ConsumerCmd consumerCmd)
